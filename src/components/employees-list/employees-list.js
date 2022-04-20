@@ -2,7 +2,7 @@ import EmployeesListItem from "../employees-list-item/employees-list-item";
 
 import './employees-list.css';
 
-const EmployeesList = ({ data, onDelete }) => { // приходит массив
+const EmployeesList = ({ data, onDelete, onToggleProp }) => { // приходит массив
 
     const elements = data.map(item => { // пробегаем по нему и строим компоненты
         //результатом map является массив из новых данных
@@ -16,7 +16,10 @@ const EmployeesList = ({ data, onDelete }) => { // приходит массив
             <EmployeesListItem
                 key={id}
                 {...itemProps}
-                onDelete={() => onDelete(id)} />
+                onDelete={() => onDelete(id)} // прокидываем функцию сверху
+                onToggleProp={(e) => onToggleProp(id, e.currentTarget.getAttribute('data-toggle'))} // получаем дата атрибуты
+            // onToggleRise={() => onToggleRise(id)}
+            />
         )// прокидываем функцию обозначенную в app и используем ее
     })
 

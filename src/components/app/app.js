@@ -13,11 +13,12 @@ class App extends Component {
     super(props)
     this.state = {
       data: [
-        { name: 'John C.', salary: 800, increase: false, id: 1 },
-        { name: 'Alex M.', salary: 3000, increase: true, id: 2 },
-        { name: 'Carl W.', salary: 5000, increase: false, id: 3 }
+        { name: 'John C.', salary: 800, increase: false, rise: true, id: 1 },
+        { name: 'Alex M.', salary: 3000, increase: true, rise: true, id: 2 },
+        { name: 'Carl W.', salary: 5000, increase: false, rise: true, id: 3 }
       ]// нельзя менять // делаем клона
     }
+    this.maxId = 4;
   }
 
   deleteItem = (id) => {
@@ -50,11 +51,12 @@ class App extends Component {
   //   })
   // }
 
-  addItem = (name, salary) => {
+  addItem = (name, salary) => { // получает в себя аргументы
     const newItem = {
       name,
       salary,
       increase: false,
+      rise: false,
       id: this.maxId++
     }
     this.setState(({ data }) => {
@@ -65,11 +67,62 @@ class App extends Component {
     });
   }
 
+  onToggleProp = (id, prop) => {
+    //console.log(`Increase this ${id}`);
+    //this.setState(({ data }) => {
+    // const index = data.findIndex(elem => elem.id === id);
+
+    // const old = data[index]; // получаем старый объект
+
+    // const newItem = { ...old, increase: !old.increase }; // новый объект // новое свойство прописанное перезаписывает старое свойство
+
+    // const newArr = [...data.slice(0, index), newItem, ...data.slice(index + 1)]; // вставляем исправленный элемент
+
+    // return {
+    //   data: newArr
+    // }
+    this.setState(({ data }) => ({
+      data: data.map(item => { // пробегаем по всем элементам
+        if (item.id === id) { // если находим подходящий
+          return { ...item, [prop]: !item[prop] } // возвращаем его с изменеием
+        }
+        return item; // map возвращает нам новый массив с изменениями
+      })
+
+    }))
+
+  }
+
+  // копипаста кода
+
+  // onToggleRise = (id) => {
+  //   //console.log(`Rise this ${id}`);
+  //   this.setState(({ data }) => ({
+  //     data: data.map(item => {
+  //       if (item.id === id) {
+  //         return { ...item, rise: !item.rise }
+  //       }
+  //       return item;
+  //     })
+
+  //   }))
+
+  // }
+
+
 
   render() {
+    const employees = this.state.data.length; //общее количество сотрудников
+    const increased = this.state.data.filter(item => item.increase).length;
+
+    console.log(employees, increased);
+
     return (
       <div className="app">
-        <AppInfo />
+        <AppInfo
+          employees={employees}
+          increased={increased}
+        />
 
         <div className="search-panel">
           <SearchPanel />
@@ -78,7 +131,10 @@ class App extends Component {
 
         <EmployeesList
           data={this.state.data}
-          onDelete={this.deleteItem} />
+          onDelete={this.deleteItem}
+          onToggleProp={this.onToggleProp}
+        // onToggleRise={this.onToggleRise}
+        />
         <EmployeesAddForm onAdd={this.addItem} />
       </div>
     );// прокинули onDelete вниз

@@ -14,16 +14,19 @@ class EmployeesAddForm extends Component {
     onValueChange = (e) => {
         this.setState({
             [e.target.name]: e.target.value // [e.target.name] ес 6 синтаксис 
-        })
+        }) // получаем значение в class EmployeesAddForm
     }
 
-    onSubmit = (e) => {//
+    onSubmit = (e) => { // type="submit" поучем элемент события
         e.preventDefault();
-        this.props.onAdd(this.state.name, this.state.salary);
+        //if (this.state.name && this.state.salary !== '') { // валидация // можно улучшить
+        if (this.state.name.length < 3 || !this.state.salary) return; // продвинутая валидация 
+        this.props.onAdd(this.state.name, this.state.salary); // заносим донные из props 
         this.setState({
             name: '',
             salary: ''
         })
+
     }
 
     render() {
