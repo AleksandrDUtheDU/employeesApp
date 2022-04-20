@@ -16,7 +16,9 @@ class App extends Component {
         { name: 'John C.', salary: 800, increase: false, rise: true, id: 1 },
         { name: 'Alex M.', salary: 3000, increase: true, rise: true, id: 2 },
         { name: 'Carl W.', salary: 5000, increase: false, rise: true, id: 3 }
-      ]// нельзя менять // делаем клона
+      ],// нельзя менять // делаем клона
+      term: '' // строка поиска по которой производим фильтр
+
     }
     this.maxId = 4;
   }
@@ -109,11 +111,29 @@ class App extends Component {
 
   // }
 
+  serchEmp = (items, term) => {
+    if (term.length === 0) {
+      return items;
+    }
+
+
+    return items.filter(item => {
+      return item.name.indexOf(term) > -1 // возвращаем массив
+    })
+  }
+  //Метод indexOf() возвращает индекс первого вхождения указанного значения в строковый объект String, на котором он был вызван, начиная с индекса fromIndex. Возвращает -1, если значение не найдено.
+
+  onUpdateSerch = (term) => { // опять прокидываем
+    this.setState({ term: term }); // ({term: term}) можно сократить ({term})
+  }
+
 
 
   render() {
+    const { data, term } = this.state;
     const employees = this.state.data.length; //общее количество сотрудников
     const increased = this.state.data.filter(item => item.increase).length;
+    const visibleData = this.serchEmp(data, term); // получаем массив
 
     console.log(employees, increased);
 
@@ -125,12 +145,12 @@ class App extends Component {
         />
 
         <div className="search-panel">
-          <SearchPanel />
+          <SearchPanel onUpdateSerch={this.onUpdateSerch} />
           <AppFilter />
         </div>
 
         <EmployeesList
-          data={this.state.data}
+          data={visibleData}
           onDelete={this.deleteItem}
           onToggleProp={this.onToggleProp}
         // onToggleRise={this.onToggleRise}
