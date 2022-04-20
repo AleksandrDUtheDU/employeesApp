@@ -14,11 +14,11 @@ class App extends Component {
     this.state = {
       data: [
         { name: 'John C.', salary: 800, increase: false, rise: true, id: 1 },
-        { name: 'Alex M.', salary: 3000, increase: true, rise: true, id: 2 },
+        { name: 'Alex M.', salary: 3000, increase: true, rise: false, id: 2 },
         { name: 'Carl W.', salary: 5000, increase: false, rise: true, id: 3 }
       ],// нельзя менять // делаем клона
-      term: '' // строка поиска по которой производим фильтр
-
+      term: '', // строка поиска по которой производим фильтр
+      filter: 'all'
     }
     this.maxId = 4;
   }
@@ -69,7 +69,7 @@ class App extends Component {
     });
   }
 
-  onToggleProp = (id, prop) => {
+  onToggleProp = (id, prop) => { // то что делает пользователь с приставкой on
     //console.log(`Increase this ${id}`);
     //this.setState(({ data }) => {
     // const index = data.findIndex(elem => elem.id === id);
@@ -111,12 +111,25 @@ class App extends Component {
 
   // }
 
+  // onIncreased = (item) => {
+  //   // if (onChaked.increas) {// если кнопка нажата производим фильтрацию
+  //   return item.filter(item => item.increase)
+  //   //}
+  // }
+
+  // onThousand = (item) => {
+  //   // if (onChaked.increas) {// если кнопка нажата производим фильтрацию
+  //   return item.filter(item => item.salary > 1000)
+  //   //}
+  // }
+
+
+
+
   serchEmp = (items, term) => {
     if (term.length === 0) {
       return items;
     }
-
-
     return items.filter(item => {
       return item.name.indexOf(term) > -1 // возвращаем массив
     })
@@ -127,13 +140,32 @@ class App extends Component {
     this.setState({ term: term }); // ({term: term}) можно сократить ({term})
   }
 
+  filterPost = (items, filter) => {
+    switch (filter) {
+      case 'rise':
+        return items.filter(item => item.rise);
+      case 'moreThen1000':
+        return items.filter(item => item.salary > 1000);
+      default:
+        return items
+    }
+  }
+
+  onFiltersSelect = (filter) => {
+    this.setState({ filter }); // фильтер равен тому фильтру который пришёл
+
+  }
 
 
   render() {
-    const { data, term } = this.state;
+    const { data, term, filter } = this.state;
     const employees = this.state.data.length; //общее количество сотрудников
     const increased = this.state.data.filter(item => item.increase).length;
-    const visibleData = this.serchEmp(data, term); // получаем массив
+    const visibleData = this.filterPost(this.serchEmp(data, term), filter); // вильтруем отфильтрованный массив после поиска// получаем массив после поиска
+    //const increasedVisibleData = this.onIncreased(visibleData); // отсортированные значения по повышению
+    //const thousandVisibleData = this.onThousand(visibleData); // отсортированные значения по зп > 1000
+    //const allFilterVisibleData = [...increasedVisibleData, ...thousandVisibleData]; // итоговое значение со всеми фильтрами
+
 
     console.log(employees, increased);
 
@@ -146,7 +178,7 @@ class App extends Component {
 
         <div className="search-panel">
           <SearchPanel onUpdateSerch={this.onUpdateSerch} />
-          <AppFilter />
+          <AppFilter filter={filter} onFiltersSelect={this.onFiltersSelect} /> {/* сверху вниз передаю свойство */}
         </div>
 
         <EmployeesList
