@@ -86,7 +86,8 @@ class App extends Component {
     this.setState(({ data }) => ({
       data: data.map(item => { // пробегаем по всем элементам
         if (item.id === id) { // если находим подходящий
-          return { ...item, [prop]: !item[prop] } // возвращаем его с изменеием
+          return { ...item, [prop]: !item[prop] } // возвращаем его с изменеием // квадратные скобки для совместимости ES6 синтаксис
+          //{ ...item, [prop]: !item[prop] } деструктурируем итем и перезаписываем в нем проп
         }
         return item; // map возвращает нам новый массив с изменениями
       })
@@ -136,11 +137,11 @@ class App extends Component {
   }
   //Метод indexOf() возвращает индекс первого вхождения указанного значения в строковый объект String, на котором он был вызван, начиная с индекса fromIndex. Возвращает -1, если значение не найдено.
 
-  onUpdateSerch = (term) => { // опять прокидываем
-    this.setState({ term: term }); // ({term: term}) можно сократить ({term})
+  onUpdateSerch = (term) => { // создаем метод присваивания term
+    this.setState({ term }); // ({term: term}) можно сократить ({term})
   }
 
-  filterPost = (items, filter) => {
+  filterPost = (items, filter) => { //условия фильтрации
     switch (filter) {
       case 'rise':
         return items.filter(item => item.rise);
@@ -155,6 +156,13 @@ class App extends Component {
     this.setState({ filter }); // фильтер равен тому фильтру который пришёл
 
   }
+
+  // onSalaryChange = (id) => {
+  //   this.setState({
+  //     [id.target.name]: id.target.value // [e.target.name] ес 6 синтаксис 
+  //   }) // получаем значение в class EmployeesAddForm
+  // }
+
 
 
   render() {
@@ -178,6 +186,7 @@ class App extends Component {
 
         <div className="search-panel">
           <SearchPanel onUpdateSerch={this.onUpdateSerch} />
+          {/*this.onUpdateSerch передаем в пропсы*/}
           <AppFilter filter={filter} onFiltersSelect={this.onFiltersSelect} /> {/* сверху вниз передаю свойство */}
         </div>
 
@@ -185,6 +194,7 @@ class App extends Component {
           data={visibleData}
           onDelete={this.deleteItem}
           onToggleProp={this.onToggleProp}
+          onSalaryChange={this.onSalaryChange}
         // onToggleRise={this.onToggleRise}
         />
         <EmployeesAddForm onAdd={this.addItem} />

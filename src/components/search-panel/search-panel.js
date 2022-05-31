@@ -12,9 +12,9 @@ class SearchPanel extends Component {
     }
 
     onUpdateSerch = (e) => { // это локальная
-        const term = e.target.value; //элемент события
-        this.setState({ term });
-        this.props.onUpdateSerch(term) // эта функция приходит из другого компонента
+        const term = e.target.value; //элемент события его value
+        this.setState({ term }); // установка локального состояния // синхронизация с локальным стейтом
+        this.props.onUpdateSerch(term) // это мы берем метотд изи props обозначенного ВЫШЕ
 
     }
 
@@ -23,8 +23,8 @@ class SearchPanel extends Component {
             <input type="text"
                 className="form-control search-input" // из библиотеки бутсрапа
                 placeholder="Найти сотрудника"
-                value={this.state.term}
-                onChange={this.onUpdateSerch} /> // поднятие локального состояния родителю
+                value={this.state.term} // синхронизация с локальным стейтом
+                onChange={this.onUpdateSerch} /> // мы вызываем ИМЕННО локальный метод
         )
     }
 }
